@@ -5,6 +5,9 @@
 #include"server.h"
 #include"jaco.h"
 #include <QTimer>
+#include "arm_control.h"
+#include <QFile>
+
 namespace Ui {
 class MainWindow;
 }
@@ -110,6 +113,14 @@ private slots:
 
     void on_pb_rmt_rel_clicked(bool checked);
 
+    void on_pb_p1_clicked();
+
+    void on_pb_p2_clicked();
+
+    void on_pb_p3_clicked();
+
+    void on_pb_p4_clicked();
+
 private:
     Ui::MainWindow *ui;
     Server *pserver;
@@ -122,6 +133,13 @@ private:
     TrajectoryPoint RemoteSpeedCmd;
     TrajectoryPoint RemotePoseHome;
 
+    arm_control *arm_control_thread;
+
+    QFile *TrajectoryFile;
+
+signals:
+    void SendPos(CartesianPosition pos);
+    void SendTrajectoryPoint(CartesianPosition p);
 };
 
 

@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include<QDebug>
 #include"iostream"
+
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -12,7 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle(tr("Tcp server"));
     pserver = new Server;
     jacoarm = new Jaco();
-
+    arm_control_thread = new arm_control(jacoarm);
+    arm_control_thread->start();
     key_state.xp = false;
     key_state.xn = false;
     key_state.yp = false;
@@ -35,10 +37,16 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(pserver,SIGNAL(data_recieved(float*)),this,SLOT(data_react(float*)));//parameter should not be ignored
     connect(pserver,SIGNAL(data_send()),this,SLOT(data_sendback()));
     connect(timer,SIGNAL(timeout()),this,SLOT(timer_out()));
+    connect(ui->pb_home,SIGNAL(clicked(bool)),arm_control_thread,SLOT(gohome()));
+    connect(this,SIGNAL(SendPos(CartesianPosition)),arm_control_thread,SLOT(GetPos(CartesianPosition)));
+    connect(this,SIGNAL(SendTrajectoryPoint(CartesianPosition)),arm_control_thread,SLOT(AddTrajectoryPoint(CartesianPosition)));
+    TrajectoryFile = new QFile("TrajectoryFile.log");
+    TrajectoryFile->open(QIODevice::ReadWrite | QIODevice::Text);
 }
 
 MainWindow::~MainWindow()
 {
+    TrajectoryFile->close();
     delete ui;
 }
 
@@ -196,7 +204,7 @@ void MainWindow::data_sendback(){
 void MainWindow::on_pb_home_clicked()
 {
     cout << "Send the robot to HOME position" << endl;
-    jacoarm->MyMoveHome();
+    //jacoarm->MyMoveHome();
 }
 
 void MainWindow::on_pb_move_clicked()
@@ -254,6 +262,7 @@ void MainWindow::timer_out(){
     CartesianPosition dataPosition;
     static int i;
     jacoarm->MyGetCartesianPosition(dataPosition);
+    emit(SendPos(dataPosition));
     pointToSend.InitStruct();
 
     //We specify that this point will be used an angular(joint by joint) velocity vector.
@@ -366,7 +375,7 @@ void MainWindow::timer_out(){
 
     }
 
-    jacoarm->MySendBasicTrajectory(pointToSend);
+    //jacoarm->MySendBasicTrajectory(pointToSend);
 
     if(i < 10)
         i++;
@@ -572,5 +581,76 @@ void MainWindow::on_pb_rmt_rel_clicked(bool checked)
         ui->pb_rmt_abs->setChecked(false);
     }
 
+
+}
+
+void MainWindow::on_pb_p1_clicked()
+{
+    CartesianPosition dataPosition;
+    AngularPosition angPos;
+    jacoarm->MyGetCartesianPosition(dataPosition);
+    jacoarm->MyGetAngularPosition(angPos);
+
+    QTextStream out(TrajectoryFile);
+
+    out << dataPosition.Coordinates.X << ","
+        << dataPosition.Coordinates.Y << ","
+        << dataPosition.Coordinates.Z << ","
+        << dataPosition.Coordinates.ThetaX << ","
+        << dataPosition.Coordinates.ThetaY << ","
+        << dataPosition.Coordinates.ThetaZ << endl;
+/*
+    out << angPos.Actuators.Actuator1 << ","
+        << angPos.Actuators.Actuator2 << ","
+        << angPos.Actuators.Actuator3 << ","
+        << angPos.Actuators.Actuator4 << ","
+        << angPos.Actuators.Actuator5 << ","
+        << angPos.Actuators.Actuator6 << endl;
+*/
+
+    qDebug()<<"trajectory point saved";
+}
+
+void MainWindow::on_pb_p2_clicked()
+{
+    CartesianPosition p;
+    TrajectoryFile->seek(0);
+    QTextStream in(TrajectoryFile);
+    while(!in.atEnd()){
+    QStringList list = in.readLine().split(',');
+    p.Coordinates.X = list[0].toDouble();
+    p.Coordinates.Y = list[1].toDouble();
+    p.Coordinates.Z = list[2].toDouble();
+    p.Coordinates.ThetaX = list[3].toDouble();
+    p.Coordinates.ThetaY = list[4].toDouble();
+    p.Coordinates.ThetaZ = list[5].toDouble();
+/*
+    qDebug()<<"send new point"
+            << p.Coordinates.X << ","
+            << p.Coordinates.Y << ","
+            << p.Coordinates.Z << ","
+            << p.Coordinates.ThetaX << ","
+            << p.Coordinates.ThetaY << ","
+            << p.Coordinates.ThetaZ << endl;*/
+    emit(SendTrajectoryPoint(p));
+/*
+    qDebug()<< list[0] << ","
+            << list[1] << ","
+            << list[2] << ","
+            << list[3] << ","
+            << list[4] << ","
+            << list[5] << endl;
+
+*/
+    }
+}
+
+void MainWindow::on_pb_p3_clicked()
+{
+
+}
+
+void MainWindow::on_pb_p4_clicked()
+{
 
 }

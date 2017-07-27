@@ -24,9 +24,10 @@ typedef int (* FDGetDevices)(KinovaDevice devices[MAX_KINOVA_DEVICE], int &resul
 typedef int (* FDSetActiveDevice)(KinovaDevice devices);
 typedef int (* FDSendBasicTrajectory)(TrajectoryPoint);
 typedef int (* FDGetAngularCommand)(AngularPosition &);
+typedef int (* FDgetAngularPosition )(AngularPosition &);
 typedef int (* FDGetCartesianCommand)(CartesianPosition &);
 typedef int (* FDGetCartesianPosition)(CartesianPosition &);
-typedef int (* FDGetCartesianPosition)(CartesianPosition &);
+//typedef int (* FDGetCartesianPosition)(CartesianPosition &);
 typedef int (* FDSendJoystickCommand)(JoystickCommand &);
 #endif // ANG_H
 

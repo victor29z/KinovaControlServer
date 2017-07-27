@@ -25,6 +25,7 @@ public:
     FDSetActiveDevice MySetActiveDevice;
     FDSendBasicTrajectory MySendBasicTrajectory;
     FDGetAngularCommand MyGetAngularCommand;
+    FDgetAngularPosition MyGetAngularPosition;
     FDGetCartesianCommand MyGetCartesianCommand;
     FDGetCartesianPosition MyGetCartesianPosition;
     FDSendJoystickCommand MySendJoystickCommand;

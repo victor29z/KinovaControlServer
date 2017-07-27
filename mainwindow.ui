@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>387</width>
+    <width>568</width>
     <height>688</height>
    </rect>
   </property>
@@ -425,14 +425,66 @@
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QPushButton" name="pb_p1">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>30</y>
+      <width>85</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>p1</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pb_p2">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>70</y>
+      <width>85</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>p2</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pb_p3">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>110</y>
+      <width>85</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>p3</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pb_p4">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>150</y>
+      <width>85</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>p4</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>387</width>
-     <height>25</height>
+     <width>568</width>
+     <height>20</height>
     </rect>
    </property>
   </widget>

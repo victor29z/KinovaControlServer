@@ -429,20 +429,23 @@
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>30</y>
+      <y>100</y>
       <width>85</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>p1</string>
+     <string>save point</string>
+    </property>
+    <property name="shortcut">
+     <string>S</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pb_p2">
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>70</y>
+      <y>140</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -455,7 +458,7 @@
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>110</y>
+      <y>180</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -468,13 +471,128 @@
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>150</y>
+      <y>220</y>
       <width>85</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>p4</string>
+     <string>play</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="layoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>340</y>
+      <width>151</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_4">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>a1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="laba1">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_10">
+       <property name="text">
+        <string>a2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="laba2">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_15">
+       <property name="text">
+        <string>a3</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="laba3">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_16">
+       <property name="text">
+        <string>a4</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="laba4">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_17">
+       <property name="text">
+        <string>a5</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLabel" name="laba5">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_18">
+       <property name="text">
+        <string>a6</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLabel" name="laba6">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="pb_kctrl">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>20</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Enable key control</string>
+    </property>
+    <property name="shortcut">
+     <string>E</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>

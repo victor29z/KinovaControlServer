@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     pserver = new Server;
     jacoarm = new Jaco();
     arm_control_thread = new arm_control(jacoarm);
-    arm_control_thread->start();
+    //arm_control_thread->start();
     key_state.xp = false;
     key_state.xn = false;
     key_state.yp = false;
@@ -82,6 +82,8 @@ void MainWindow::on_init_pushButton_clicked()
     RemotePoseCmd.Position.CartesianPosition.ThetaX = dataPosition.Coordinates.ThetaX;
     RemotePoseCmd.Position.CartesianPosition.ThetaY = dataPosition.Coordinates.ThetaY;
     RemotePoseCmd.Position.CartesianPosition.ThetaZ = dataPosition.Coordinates.ThetaZ;
+
+    arm_control_thread->start();
 }
 
 void MainWindow::on_close_pushButton_clicked()//there is no reaction when we click close
@@ -95,47 +97,7 @@ void MainWindow::on_exit_pushButton_clicked()
 }
 
 
-/*void MainWindow::on_confirm_pushButton_clicked()
-{
-    AngularPosition currentCommand;
-    if(jacoarm->InitState)//see details in jaco.cpp
-    {
-        cout << "* * *  E R R O R   D U R I N G   I N I T I A L I Z A T I O N  * * *" << endl;
-    }
-    else
-    {
-        cout << "I N I T I A L I Z A T I O N   C O M P L E T E D" << endl << endl;
-        TrajectoryPoint pointToSend;
-        pointToSend.InitStruct();
 
-        pointToSend.Position.Type = ANGULAR_POSITION;
-
-        //We get the actual angular command of the robot.
-        jacoarm->MyGetAngularCommand(currentCommand);
-
-        pointToSend.Position.Actuators.Actuator1 = currentCommand.Actuators.Actuator1 +  pserver->ser[0];;
-        pointToSend.Position.Actuators.Actuator2 = currentCommand.Actuators.Actuator2 +  pserver->ser[1];;
-        pointToSend.Position.Actuators.Actuator3 = currentCommand.Actuators.Actuator3 +  pserver->ser[2];;
-        pointToSend.Position.Actuators.Actuator4 = currentCommand.Actuators.Actuator4 +  pserver->ser[3];;
-        pointToSend.Position.Actuators.Actuator5 = currentCommand.Actuators.Actuator5 +  pserver->ser[4];;
-        pointToSend.Position.Actuators.Actuator6 = currentCommand.Actuators.Actuator6 +  pserver->ser[5];;
-        //when controlling angular,we'd better not set its value directly,but use the adding way.(+)
-        //in order to prevent Kinova from being damaged.
-        cout << "*********************************" << endl;
-        cout << "Sending the first point to the robot." << endl;
-        jacoarm->MySendBasicTrajectory(pointToSend);
-
-
-        cout << "*********************************" << endl << endl << endl;
-
-
-        cout << endl << "WARNING: Your robot is now set to angular control. If you use the joystick, it will be a joint by joint movement." << endl;
-        cout << endl << "C L O S I N G   A P I" << endl;
-
-    }
-
-
-}*/
 
 void MainWindow::data_react(float *data)
 {
@@ -260,8 +222,10 @@ void MainWindow::timer_out(){
 
     TrajectoryPoint pointToSend;
     CartesianPosition dataPosition;
-    static int i;
+    AngularPosition angPos;
     jacoarm->MyGetCartesianPosition(dataPosition);
+    jacoarm->MyGetAngularPosition(angPos);
+    static int i;
     emit(SendPos(dataPosition));
     pointToSend.InitStruct();
 
@@ -287,12 +251,12 @@ void MainWindow::timer_out(){
 
         if(key_state.txp){
             pointToSend.Position.CartesianPosition.ThetaX = 0.5;
-            pointToSend.Position.CartesianPosition.ThetaY = 0.5;
+
         }
 
         if(key_state.txn){
             pointToSend.Position.CartesianPosition.ThetaX = -0.5;
-            pointToSend.Position.CartesianPosition.ThetaY = -0.5;
+
         }
 
 
@@ -305,6 +269,8 @@ void MainWindow::timer_out(){
             pointToSend.Position.CartesianPosition.ThetaZ = 0.5;
         if(key_state.tzn)
             pointToSend.Position.CartesianPosition.ThetaZ = -0.5;
+
+        if(key_control_enabled)jacoarm->MySendBasicTrajectory(pointToSend);
     }
     else{
         if(remote_mode == REMOTE_MODE_ABS)
@@ -372,10 +338,10 @@ void MainWindow::timer_out(){
             else
                 pointToSend.Position.CartesianPosition.ThetaZ = 0;
         }
-
+        jacoarm->MySendBasicTrajectory(pointToSend);
     }
 
-    //jacoarm->MySendBasicTrajectory(pointToSend);
+
 
     if(i < 10)
         i++;
@@ -388,6 +354,13 @@ void MainWindow::timer_out(){
         ui->labtx->setNum(dataPosition.Coordinates.ThetaX);
         ui->labty->setNum(dataPosition.Coordinates.ThetaY);
         ui->labtz->setNum(dataPosition.Coordinates.ThetaZ);
+
+        ui->laba1->setNum(angPos.Actuators.Actuator1);
+        ui->laba2->setNum(angPos.Actuators.Actuator2);
+        ui->laba3->setNum(angPos.Actuators.Actuator3);
+        ui->laba4->setNum(angPos.Actuators.Actuator4);
+        ui->laba5->setNum(angPos.Actuators.Actuator5);
+        ui->laba6->setNum(angPos.Actuators.Actuator6);
 
     }
 
@@ -614,6 +587,7 @@ void MainWindow::on_pb_p1_clicked()
 void MainWindow::on_pb_p2_clicked()
 {
     CartesianPosition p;
+
     TrajectoryFile->seek(0);
     QTextStream in(TrajectoryFile);
     while(!in.atEnd()){
@@ -648,9 +622,89 @@ void MainWindow::on_pb_p2_clicked()
 void MainWindow::on_pb_p3_clicked()
 {
 
+    TrajectoryPoint pointToSend;
+    pointToSend.InitStruct();
+
+    //We specify that this point will be used an angular(joint by joint) velocity vector.
+    pointToSend.Position.Type = ANGULAR_POSITION;
+
+    pointToSend.Position.Actuators.Actuator1 = 241.90;
+    pointToSend.Position.Actuators.Actuator2 = 170.63;
+    pointToSend.Position.Actuators.Actuator3 = 98.20;
+    pointToSend.Position.Actuators.Actuator4 = 271.39;
+    pointToSend.Position.Actuators.Actuator5 = 420.84;
+    pointToSend.Position.Actuators.Actuator6 = 398.73;
+
+    jacoarm->MySendBasicTrajectory(pointToSend);
+
 }
 
 void MainWindow::on_pb_p4_clicked()
 {
+
+    int i;
+    TrajectoryPoint pointToSend;
+    pointToSend.InitStruct();
+
+    //We specify that this point will be used an angular(joint by joint) velocity vector.
+    pointToSend.Position.Type = CARTESIAN_POSITION;
+    TrajectoryFile->seek(0);
+    QTextStream in(TrajectoryFile);
+    while(!in.atEnd()){
+        QStringList list = in.readLine().split(',');
+        pointToSend.Position.CartesianPosition.X = list[0].toDouble();
+        pointToSend.Position.CartesianPosition.Y = list[1].toDouble();
+        pointToSend.Position.CartesianPosition.Z = list[2].toDouble();
+        pointToSend.Position.CartesianPosition.ThetaX = list[3].toDouble();
+        pointToSend.Position.CartesianPosition.ThetaY = list[4].toDouble();
+        pointToSend.Position.CartesianPosition.ThetaZ = list[5].toDouble();
+        jacoarm->MySendBasicTrajectory(pointToSend);
+        qDebug()<<"pos"<< i++ <<endl;
+    }
+
+/*
+    pointToSend.Position.CartesianPosition.X = 0.212346;
+    pointToSend.Position.CartesianPosition.Y = -0.256814; //Move along Y axis at 20 cm per second
+    pointToSend.Position.CartesianPosition.Z = 0.541686;
+    pointToSend.Position.CartesianPosition.ThetaX = 1.65492;
+    pointToSend.Position.CartesianPosition.ThetaY = 1.11717;
+    pointToSend.Position.CartesianPosition.ThetaZ = 0.122715;
+
+    jacoarm->MySendBasicTrajectory(pointToSend);
+    qDebug()<<"pos1"<<endl;
+    pointToSend.Position.CartesianPosition.X = 0.212346;
+    pointToSend.Position.CartesianPosition.Y = -0.256814; //Move along Y axis at 20 cm per second
+    pointToSend.Position.CartesianPosition.Z = 0.576686;
+    pointToSend.Position.CartesianPosition.ThetaX = 1.65492;
+    pointToSend.Position.CartesianPosition.ThetaY = 1.11717;
+    pointToSend.Position.CartesianPosition.ThetaZ = 0.122715;
+
+    jacoarm->MySendBasicTrajectory(pointToSend);
+    qDebug()<<"pos2"<<endl;
+    pointToSend.Position.CartesianPosition.X = 0.212346;
+    pointToSend.Position.CartesianPosition.Y = -0.257814; //Move along Y axis at 20 cm per second
+    pointToSend.Position.CartesianPosition.Z = 0.600686;
+    pointToSend.Position.CartesianPosition.ThetaX = 1.656;
+    pointToSend.Position.CartesianPosition.ThetaY = 1.117;
+    pointToSend.Position.CartesianPosition.ThetaZ = 0.124;
+
+    jacoarm->MySendBasicTrajectory(pointToSend);
+    qDebug()<<"pos3"<<endl;
+
+*/
+}
+
+void MainWindow::on_pb_kctrl_clicked(bool checked)
+{
+    if(checked){
+
+        key_control_enabled = true;
+
+    }
+
+    else{
+        key_control_enabled = false;
+    }
+
 
 }

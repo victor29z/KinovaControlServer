@@ -10,7 +10,7 @@
 #define ARM_STATUS_MOVE     0x02
 #define ARM_STATUS_FINISHED 0x03
 
-#define SIZE_CMDFIFO        100
+#define SIZE_CMDFIFO        5
 class arm_control : public QThread
 {
     Q_OBJECT

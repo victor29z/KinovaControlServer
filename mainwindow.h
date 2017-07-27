@@ -121,6 +121,8 @@ private slots:
 
     void on_pb_p4_clicked();
 
+    void on_pb_kctrl_clicked(bool checked);
+
 private:
     Ui::MainWindow *ui;
     Server *pserver;
@@ -128,6 +130,7 @@ private:
     QTimer *timer;
     KEY_STATE_DEF key_state;
     bool remote_enbaled;
+    bool key_control_enabled;
     int remote_mode;
     TrajectoryPoint RemotePoseCmd;
     TrajectoryPoint RemoteSpeedCmd;

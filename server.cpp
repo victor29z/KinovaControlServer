@@ -90,7 +90,7 @@ void Server::udp_recv(){
 
 void Server::get_forcedata_slot(int * forcedata){
     udpSocket->writeDatagram((char*)forcedata , sizeof(int) * 6, QHostAddress(hostaddr),18888);
-
+/*
     qDebug()<<"send force data:"
            <<forcedata[0]<<","
            <<forcedata[1]<<","
@@ -98,4 +98,5 @@ void Server::get_forcedata_slot(int * forcedata){
            <<forcedata[3]<<","
            <<forcedata[4]<<","
            <<forcedata[5]<<endl;
+*/
 }

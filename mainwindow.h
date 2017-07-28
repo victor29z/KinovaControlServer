@@ -140,6 +140,12 @@ private slots:
 
     void on_pb_ft_zero_clicked();
 
+    void on_pb_tim_clicked();
+
+    void on_pb_tim_clicked(bool checked);
+
+    void on_pb_kctrl_2_clicked(bool checked);
+
 private:
     Ui::MainWindow *ui;
     Server *pserver;
@@ -158,10 +164,13 @@ private:
     QFile *TrajectoryFile;
 
     int forcedata[6];
+    int forceadmit[6];
 
     bhand* hand;
     axisSensorData FTData;
     axisSensorData  ftzero;
+
+    bool admitance_control_enabled;
 signals:
     void SendPos(CartesianPosition pos);
     void SendForce(int* forcedata);

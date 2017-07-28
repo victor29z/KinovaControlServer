@@ -18,7 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
     arm_control_thread = new arm_control(jacoarm);
     //arm_control_thread->start();
 
-    for(i = 0; i < 6; i++)forcedata[i] = 0;
+    for(i = 0; i < 6; i++){
+        forcedata[i] = 0;
+        forceadmit[i] = 0;
+    }
     ftzero.force_x = 0;
     ftzero.force_y = 0;
     ftzero.force_z = 0;
@@ -41,9 +44,11 @@ MainWindow::MainWindow(QWidget *parent) :
     key_state.tzn = false;
 
     remote_enbaled = false;
+    admitance_control_enabled = false;
+    key_control_enabled = false;
 
     timer = new QTimer(this);
-    timer->start(5);
+    //timer->start(5);
    //connect(pserver,SIGNAL(pserver->data_recieved(pserver->ser)),this,SLOT(data_react()));
     connect(pserver,SIGNAL(data_recieved(float*)),this,SLOT(data_react(float*)));//parameter should not be ignored
     connect(pserver,SIGNAL(data_send()),this,SLOT(data_sendback()));
@@ -95,7 +100,8 @@ void MainWindow::on_init_pushButton_clicked()
     RemotePoseCmd.Position.CartesianPosition.ThetaY = dataPosition.Coordinates.ThetaY;
     RemotePoseCmd.Position.CartesianPosition.ThetaZ = dataPosition.Coordinates.ThetaZ;
 
-    arm_control_thread->start();
+    //arm_control_thread->start();
+
 }
 
 void MainWindow::on_close_pushButton_clicked()//there is no reaction when we click close
@@ -289,6 +295,25 @@ void MainWindow::timer_out(){
             pointToSend.Position.CartesianPosition.ThetaZ = -0.5;
 
         if(key_control_enabled)jacoarm->MySendBasicTrajectory(pointToSend);
+
+        if(admitance_control_enabled){
+            if(forceadmit[0] > 250)
+                pointToSend.Position.CartesianPosition.X = 0.5;
+            if(forceadmit[0] < -250)
+                pointToSend.Position.CartesianPosition.X = -0.5;
+
+            if(forceadmit[1] > 250)
+                pointToSend.Position.CartesianPosition.Y = 0.5;
+            if(forceadmit[1] < -250)
+                pointToSend.Position.CartesianPosition.Y = -0.5;
+
+            if(forceadmit[2] > 250)
+                pointToSend.Position.CartesianPosition.Z = 0.5;
+            if(forceadmit[2] < -250)
+                pointToSend.Position.CartesianPosition.Z = -0.5;
+
+            jacoarm->MySendBasicTrajectory(pointToSend);
+        }
     }
     else{
         if(remote_mode == REMOTE_MODE_ABS)
@@ -820,10 +845,38 @@ void MainWindow::on_pb_getFT_clicked()
     forcedata[0] = (int)(-(force_data.force_z - ftzero.force_z)* 100);
     forcedata[1] = (int)((force_data.force_y - ftzero.force_y)* 100);
     forcedata[2] = (int)((force_data.force_x - ftzero.force_x)* 100);
+
+    forceadmit[1] = (int)((force_data.force_z - ftzero.force_z)* 100);
+    forceadmit[0] = (int)((force_data.force_y - ftzero.force_y)* 100);
+    forceadmit[2] = (int)((force_data.force_x - ftzero.force_x)* 100);
 }
 
 
 void MainWindow::on_pb_ft_zero_clicked()
 {
     ftzero = FTData;
+}
+
+void MainWindow::on_pb_tim_clicked()
+{
+
+}
+
+void MainWindow::on_pb_tim_clicked(bool checked)
+{
+    if(checked){
+       timer->start(5);
+    }
+    else
+        timer->stop();
+
+}
+
+void MainWindow::on_pb_kctrl_2_clicked(bool checked)
+{
+    if(checked){
+       admitance_control_enabled = true;
+    }
+    else
+        admitance_control_enabled = false;
 }

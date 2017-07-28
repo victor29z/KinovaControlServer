@@ -428,8 +428,8 @@
    <widget class="QPushButton" name="pb_p1">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>100</y>
+      <x>430</x>
+      <y>150</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -444,8 +444,8 @@
    <widget class="QPushButton" name="pb_p2">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>140</y>
+      <x>430</x>
+      <y>190</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -457,8 +457,8 @@
    <widget class="QPushButton" name="pb_p3">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>180</y>
+      <x>430</x>
+      <y>230</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -470,8 +470,8 @@
    <widget class="QPushButton" name="pb_p4">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>220</y>
+      <x>430</x>
+      <y>270</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -579,8 +579,8 @@
    <widget class="QPushButton" name="pb_kctrl">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>20</y>
+      <x>420</x>
+      <y>50</y>
       <width>121</width>
       <height>31</height>
      </rect>
@@ -836,6 +836,44 @@
     </property>
     <property name="text">
      <string>Set FT Zero</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pb_tim">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>10</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Start timer</string>
+    </property>
+    <property name="shortcut">
+     <string>E</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pb_kctrl_2">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>90</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Enable adm control</string>
+    </property>
+    <property name="shortcut">
+     <string>E</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>

@@ -7,6 +7,7 @@
 #include <QTimer>
 #include "arm_control.h"
 #include <QFile>
+#include "bhand/bhand.h"
 
 namespace Ui {
 class MainWindow;
@@ -123,6 +124,22 @@ private slots:
 
     void on_pb_kctrl_clicked(bool checked);
 
+    void on_pb_bhand_init_clicked();
+
+    void on_pb_setPos_1_clicked();
+
+    void on_pb_setPos_2_clicked();
+
+    void on_pb_setPos_3_clicked();
+
+    void on_pb_getPos_clicked();
+
+    void on_pb_getFT_clicked();
+
+    void on_pb_setPos_clicked();
+
+    void on_pb_ft_zero_clicked();
+
 private:
     Ui::MainWindow *ui;
     Server *pserver;
@@ -140,8 +157,14 @@ private:
 
     QFile *TrajectoryFile;
 
+    int forcedata[6];
+
+    bhand* hand;
+    axisSensorData FTData;
+    axisSensorData  ftzero;
 signals:
     void SendPos(CartesianPosition pos);
+    void SendForce(int* forcedata);
     void SendTrajectoryPoint(CartesianPosition p);
 };
 

@@ -3,6 +3,8 @@
 #include<QDebug>
 #include<QByteArray>
 using namespace  std;
+char hostaddr[20] = "192.168.3.7";
+
 Server::Server()
 {
     //setWindowTitle(tr("Tcp server"));
@@ -83,5 +85,17 @@ void Server::udp_recv(){
     emit data_recieved(ser);
 
 
+
 }
 
+void Server::get_forcedata_slot(int * forcedata){
+    udpSocket->writeDatagram((char*)forcedata , sizeof(int) * 6, QHostAddress(hostaddr),18888);
+
+    qDebug()<<"send force data:"
+           <<forcedata[0]<<","
+           <<forcedata[1]<<","
+           <<forcedata[2]<<","
+           <<forcedata[3]<<","
+           <<forcedata[4]<<","
+           <<forcedata[5]<<endl;
+}

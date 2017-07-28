@@ -9,12 +9,23 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    int i;
     ui->setupUi(this);
     setWindowTitle(tr("Tcp server"));
     pserver = new Server;
     jacoarm = new Jaco();
+    hand = new bhand("/dev/pcan0");
     arm_control_thread = new arm_control(jacoarm);
     //arm_control_thread->start();
+
+    for(i = 0; i < 6; i++)forcedata[i] = 0;
+    ftzero.force_x = 0;
+    ftzero.force_y = 0;
+    ftzero.force_z = 0;
+    ftzero.torque_x = 0;
+    ftzero.torque_y = 0;
+    ftzero.torque_z = 0;
+
     key_state.xp = false;
     key_state.xn = false;
     key_state.yp = false;
@@ -40,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pb_home,SIGNAL(clicked(bool)),arm_control_thread,SLOT(gohome()));
     connect(this,SIGNAL(SendPos(CartesianPosition)),arm_control_thread,SLOT(GetPos(CartesianPosition)));
     connect(this,SIGNAL(SendTrajectoryPoint(CartesianPosition)),arm_control_thread,SLOT(AddTrajectoryPoint(CartesianPosition)));
+    connect(this,SIGNAL(SendForce(int*)),this->pserver,SLOT(get_forcedata_slot(int*)));
     TrajectoryFile = new QFile("TrajectoryFile.log");
     TrajectoryFile->open(QIODevice::ReadWrite | QIODevice::Text);
 }
@@ -103,14 +115,13 @@ void MainWindow::data_react(float *data)
 {
     TrajectoryPoint pointToSend;
 
-
+    qDebug()<<"recv pose data";
     if(jacoarm->InitState)//see details in jaco.cpp
     {
         cout << "* * *  E R R O R   D U R I N G   I N I T I A L I Z A T I O N  * * *" << endl;
     }
     else
     {
-
 
 
         pointToSend.InitStruct();
@@ -123,9 +134,9 @@ void MainWindow::data_react(float *data)
         //RemotePoseCmd = RemotePoseHome;
         if(remote_mode == REMOTE_MODE_ABS)
         {
-            RemotePoseCmd.Position.CartesianPosition.X = RemotePoseHome.Position.CartesianPosition.X - data[1] * 2;
-            RemotePoseCmd.Position.CartesianPosition.Y = RemotePoseHome.Position.CartesianPosition.Y + (data[0]-0.14) * 2;
-            RemotePoseCmd.Position.CartesianPosition.Z = RemotePoseHome.Position.CartesianPosition.Z + data[2] * 2;
+            RemotePoseCmd.Position.CartesianPosition.X = RemotePoseHome.Position.CartesianPosition.X - data[1] / 2 ;
+            RemotePoseCmd.Position.CartesianPosition.Y = RemotePoseHome.Position.CartesianPosition.Y + (data[0]-0.14) / 2;
+            RemotePoseCmd.Position.CartesianPosition.Z = RemotePoseHome.Position.CartesianPosition.Z + data[2] / 2 ;
             RemotePoseCmd.Position.CartesianPosition.ThetaX = RemotePoseHome.Position.CartesianPosition.ThetaX + (data[4] + 1.3)  ;
             RemotePoseCmd.Position.CartesianPosition.ThetaY = RemotePoseHome.Position.CartesianPosition.ThetaY + (data[5] - 2.1) ;
             RemotePoseCmd.Position.CartesianPosition.ThetaZ = RemotePoseHome.Position.CartesianPosition.ThetaZ + (data[3] + 3.8)  ;
@@ -139,6 +150,8 @@ void MainWindow::data_react(float *data)
             RemoteSpeedCmd.Position.CartesianPosition.ThetaZ = data[3] + 3.8;
 
         }
+
+
 
     }
 
@@ -226,7 +239,12 @@ void MainWindow::timer_out(){
     jacoarm->MyGetCartesianPosition(dataPosition);
     jacoarm->MyGetAngularPosition(angPos);
     static int i;
+    static unsigned int cnt;
+    hand->can_handle.read_loop(false);
+    if(cnt++ % 10 == 0)
+        on_pb_getFT_clicked();
     emit(SendPos(dataPosition));
+    emit(SendForce(forcedata));
     pointToSend.InitStruct();
 
     //We specify that this point will be used an angular(joint by joint) velocity vector.
@@ -290,7 +308,7 @@ void MainWindow::timer_out(){
                 pointToSend.Position.CartesianPosition.Z = -0.1;
             else if((dataPosition.Coordinates.Z - RemotePoseCmd.Position.CartesianPosition.Z) < -0.01)
                 pointToSend.Position.CartesianPosition.Z = 0.1;
-
+/*
             if((dataPosition.Coordinates.ThetaX - RemotePoseCmd.Position.CartesianPosition.ThetaX) > 0.01)
                 pointToSend.Position.CartesianPosition.ThetaX = -0.1;
             else if((dataPosition.Coordinates.ThetaX - RemotePoseCmd.Position.CartesianPosition.ThetaX) < -0.01)
@@ -305,6 +323,7 @@ void MainWindow::timer_out(){
                 pointToSend.Position.CartesianPosition.ThetaZ = -0.1;
             else if((dataPosition.Coordinates.ThetaZ - RemotePoseCmd.Position.CartesianPosition.ThetaZ) < -0.01)
                 pointToSend.Position.CartesianPosition.ThetaZ = 0.1;
+*/
         }
         if(remote_mode == REMOTE_MODE_REL)
         {
@@ -628,12 +647,12 @@ void MainWindow::on_pb_p3_clicked()
     //We specify that this point will be used an angular(joint by joint) velocity vector.
     pointToSend.Position.Type = ANGULAR_POSITION;
 
-    pointToSend.Position.Actuators.Actuator1 = 241.90;
-    pointToSend.Position.Actuators.Actuator2 = 170.63;
-    pointToSend.Position.Actuators.Actuator3 = 98.20;
-    pointToSend.Position.Actuators.Actuator4 = 271.39;
-    pointToSend.Position.Actuators.Actuator5 = 420.84;
-    pointToSend.Position.Actuators.Actuator6 = 398.73;
+    pointToSend.Position.Actuators.Actuator1 = 152.44;
+    pointToSend.Position.Actuators.Actuator2 = 256.93;
+    pointToSend.Position.Actuators.Actuator3 = 107.23;
+    pointToSend.Position.Actuators.Actuator4 = 237.03;
+    pointToSend.Position.Actuators.Actuator5 = 104.09;
+    pointToSend.Position.Actuators.Actuator6 = 116.34;
 
     jacoarm->MySendBasicTrajectory(pointToSend);
 
@@ -707,4 +726,104 @@ void MainWindow::on_pb_kctrl_clicked(bool checked)
     }
 
 
+}
+
+void MainWindow::on_pb_bhand_init_clicked()
+{
+
+    hand->barett_hand_init();
+    hand->axisForce_init();
+
+}
+void MainWindow::on_pb_setPos_1_clicked()
+{
+    hand->setJointPosition(1.068,1.068,1.068,3.126);
+}
+
+void MainWindow::on_pb_setPos_2_clicked()
+{
+    hand->setJointPosition(0,0,0,3.126);
+}
+
+void MainWindow::on_pb_setPos_3_clicked()
+{
+    hand->setJointPosition(2.442,2.442,2.442,3.126);
+}
+
+void MainWindow::on_pb_getPos_clicked()
+{
+    float pos;
+    QString tmpstr;
+
+
+    pos = hand->enc_to_rad(hand->get_position(FINGER1));
+    tmpstr.setNum(pos);
+    ui->f1_pos->setText(tmpstr);
+    pos = hand->enc_to_rad(hand->get_position(FINGER2));
+    tmpstr.setNum(pos);
+    ui->f2_pos->setText(tmpstr);
+    pos = hand->enc_to_rad(hand->get_position(FINGER3));
+    tmpstr.setNum(pos);
+    ui->f3_pos->setText(tmpstr);
+    pos = hand->enc_to_rad(hand->get_position(SPREAD),SPREAD_TYPE);
+    tmpstr.setNum(pos);
+    ui->fs_pos->setText(tmpstr);
+}
+
+void MainWindow::on_pb_setPos_clicked()
+{
+    float pos1,pos2,pos3,pos4;
+    QString tmpstr;
+
+    pos1 = ui->f1_pos->text().toFloat();
+    pos2 = ui->f2_pos->text().toFloat();
+    pos3 = ui->f3_pos->text().toFloat();
+    pos4 = ui->fs_pos->text().toFloat();
+    hand->setJointPosition(pos1,pos2,pos3,pos4);
+
+}
+
+void MainWindow::on_pb_getFT_clicked()
+{
+
+    axisSensorData force_data = hand->get_AxisForce(AxisForceQuery);
+    axisSensorData torque_data = hand->get_AxisTorque(AxisTorqueQuery);
+    FTData.force_x = force_data.force_x;
+    FTData.force_y = force_data.force_y;
+    FTData.force_z = force_data.force_z;
+    FTData.torque_x = torque_data.torque_x ;
+    FTData.torque_y = torque_data.torque_y ;
+    FTData.torque_z = torque_data.torque_z ;
+
+
+    QString tmpstr;
+
+    tmpstr.setNum(((force_data.force_x - ftzero.force_x) * 1.00));
+    ui->forceX_show->setText(tmpstr);
+
+    tmpstr.setNum(((force_data.force_y - ftzero.force_y) * 1.00));
+    ui->forceY_show->setText(tmpstr);
+
+    tmpstr.setNum(((force_data.force_z - ftzero.force_z)* 1.00));
+    ui->forceZ_show->setText(tmpstr);
+
+    tmpstr.setNum(((torque_data.torque_x -ftzero.torque_x)* 1.00));
+    ui->torqueX_show->setText(tmpstr);
+
+    tmpstr.setNum(((torque_data.torque_y -ftzero.torque_y)* 1.00));
+    ui->torqueY_show->setText(tmpstr);
+
+    tmpstr.setNum(((torque_data.torque_z -ftzero.torque_z) * 1.00));
+    ui->torqueZ_show->setText(tmpstr);
+
+
+    forcedata[0] = (int)(-(force_data.force_z - ftzero.force_z)* 100);
+    forcedata[1] = (int)((force_data.force_y - ftzero.force_y)* 100);
+    forcedata[2] = (int)((force_data.force_x - ftzero.force_x)* 100);
+}
+
+
+void MainWindow::on_pb_ft_zero_clicked()
+{
+    ftzero = FTData;
 }

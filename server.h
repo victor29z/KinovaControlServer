@@ -35,6 +35,7 @@ public slots:
     void recv_slot();
     void udp_recv();
     void connect_slot();
+    void get_forcedata_slot(int * forcedata);
 signals:
     void data_recieved(float *);
     void data_recieved(int *);

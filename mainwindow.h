@@ -49,6 +49,7 @@ private slots:
    // void on_confirm_pushButton_clicked();
 
     void data_react(float* data);
+    void force_data_react(float* data);
 
     void data_sendback();
 

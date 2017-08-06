@@ -7,24 +7,19 @@ char hostaddr[20] = "192.168.3.7";
 
 Server::Server()
 {
-    //setWindowTitle(tr("Tcp server"));
-    /*sendButton = new QPushButton("send");
-    exitButton = new QPushButton("exit");
-    textEdit = new QTextEdit();
-    layout = new QGridLayout();*/
+
     tcpServer = new QTcpServer();
     udpSocket = new QUdpSocket(this);
     udpSocket->bind(QHostAddress::Any,18888);
-    /*layout->addWidget(textEdit,0,0,4,6);
-    layout->addWidget(sendButton,5,0,1,2);
-    layout->addWidget(exitButton,5,4,1,2);*/
 
-    //setLayout(layout);
+    udpforce = new QUdpSocket(this);
+    udpforce->bind(QHostAddress::Any,18889);
 
     //tcpServer->listen(QHostAddress::Any,43578);
 
     connect(tcpServer,SIGNAL(newConnection()),this,SLOT(connect_slot()));
     connect(udpSocket,SIGNAL(readyRead()),this,SLOT(udp_recv()));
+    connect(udpforce,SIGNAL(readyRead()),this,SLOT(udp_force_recv()));
     //connect(sendButton,SIGNAL(clicked()),this,SLOT(send_slot()));
     //connect(exitButton,SIGNAL(clicked()),this,SLOT(close()));
     ser[0] = 0;
@@ -82,7 +77,21 @@ void Server::udp_recv(){
     udpSocket->readDatagram((char *)hand_data,sizeof(int) * 6);
     for(i = 0; i < 6; i++)
         ser[i] = hand_data[i] / 1000000.0f;
+
     emit data_recieved(ser);
+
+
+
+}
+
+void Server::udp_force_recv(){
+    int i;
+    int force_data[6];
+    udpforce->readDatagram((char *)force_data,sizeof(int) * 6);
+    for(i = 0; i < 6; i++)
+        force_data_trans[i] = force_data[i] / 100.0f;
+    //qDebug()<<"forcedata received"<<endl;
+    emit force_data_recieved(force_data_trans);
 
 
 

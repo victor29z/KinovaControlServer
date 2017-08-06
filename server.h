@@ -25,20 +25,24 @@ public:
     Server();
 
     float ser[6];
+    float force_data_trans[6];
     int hand_data[6];
     QTcpServer *tcpServer;
     QTcpSocket *tcpSocket;
     QUdpSocket * udpSocket;
+    QUdpSocket * udpforce;
     TCP_PACK_DEF tcp_pack;
 public slots:
 
     void recv_slot();
     void udp_recv();
+    void udp_force_recv();
     void connect_slot();
     void get_forcedata_slot(int * forcedata);
 signals:
     void data_recieved(float *);
     void data_recieved(int *);
+    void force_data_recieved(float *);
     void data_send();
 };
 

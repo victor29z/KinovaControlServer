@@ -3,7 +3,7 @@
 #include<QDebug>
 #include<QByteArray>
 using namespace  std;
-char hostaddr[20] = "192.168.3.7";
+char hostaddr[20] = "192.168.3.6";
 
 Server::Server()
 {

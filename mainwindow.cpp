@@ -341,19 +341,19 @@ void MainWindow::timer_out(){
         if(key_control_enabled)jacoarm->MySendBasicTrajectory(pointToSend);
 
         if(admitance_control_enabled){
-            if(forceadmit[0] > 250)
+            if(forceadmit[0] > 550)
                 pointToSend.Position.CartesianPosition.X = 0.5;
-            if(forceadmit[0] < -250)
+            if(forceadmit[0] < -550)
                 pointToSend.Position.CartesianPosition.X = -0.5;
 
-            if(forceadmit[1] > 250)
+            if(forceadmit[1] > 550)
                 pointToSend.Position.CartesianPosition.Y = 0.5;
-            if(forceadmit[1] < -250)
+            if(forceadmit[1] < -550)
                 pointToSend.Position.CartesianPosition.Y = -0.5;
 
-            if(forceadmit[2] > 250)
+            if(forceadmit[2] > 550)
                 pointToSend.Position.CartesianPosition.Z = 0.5;
-            if(forceadmit[2] < -250)
+            if(forceadmit[2] < -550)
                 pointToSend.Position.CartesianPosition.Z = -0.5;
 
             jacoarm->MySendBasicTrajectory(pointToSend);

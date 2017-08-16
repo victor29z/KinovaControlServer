@@ -76,9 +76,9 @@ void Server::udp_recv(){
     int i;
     udpSocket->readDatagram((char *)hand_data,sizeof(int) * 6);
     for(i = 0; i < 6; i++)
-        ser[i] = hand_data[i] / 1000000.0f;
+        handle_position[i] = hand_data[i] / 1000000.0f;
 
-    emit data_recieved(ser);
+    emit data_recieved(handle_position);
 
 
 

@@ -608,95 +608,17 @@
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="QPushButton" name="pb_bhand_init">
-    <property name="geometry">
-     <rect>
-      <x>610</x>
-      <y>20</y>
-      <width>80</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Hand Init</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pb_setPos_3">
-    <property name="geometry">
-     <rect>
-      <x>910</x>
-      <y>120</y>
-      <width>80</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Set Pos3</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pb_setPos_1">
-    <property name="geometry">
-     <rect>
-      <x>910</x>
-      <y>60</y>
-      <width>80</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Set Pos1</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pb_setPos_2">
-    <property name="geometry">
-     <rect>
-      <x>910</x>
-      <y>90</y>
-      <width>80</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Set Pos2</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pb_getFT">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>20</y>
+      <x>620</x>
+      <y>10</y>
       <width>80</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>Get FT</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pb_setPos">
-    <property name="geometry">
-     <rect>
-      <x>910</x>
-      <y>20</y>
-      <width>80</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Set Pos</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pb_getPos">
-    <property name="geometry">
-     <rect>
-      <x>810</x>
-      <y>20</y>
-      <width>80</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Get Pos</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="fs_pos">
@@ -828,8 +750,8 @@
    <widget class="QPushButton" name="pb_ft_zero">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>50</y>
+      <x>620</x>
+      <y>40</y>
       <width>85</width>
       <height>27</height>
      </rect>

@@ -25,6 +25,7 @@ public:
     Server();
 
     float ser[6];
+    float handle_position[6];
     float force_data_trans[6];
     int hand_data[6];
     QTcpServer *tcpServer;

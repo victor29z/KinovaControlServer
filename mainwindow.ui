@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1015</width>
-    <height>688</height>
+    <width>1021</width>
+    <height>876</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -611,8 +611,8 @@
    <widget class="QPushButton" name="pb_getFT">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>10</y>
+      <x>910</x>
+      <y>340</y>
       <width>80</width>
       <height>23</height>
      </rect>
@@ -624,8 +624,8 @@
    <widget class="QLineEdit" name="fs_pos">
     <property name="geometry">
      <rect>
-      <x>880</x>
-      <y>280</y>
+      <x>750</x>
+      <y>430</y>
       <width>113</width>
       <height>23</height>
      </rect>
@@ -634,8 +634,8 @@
    <widget class="QLineEdit" name="f1_pos">
     <property name="geometry">
      <rect>
-      <x>880</x>
-      <y>190</y>
+      <x>750</x>
+      <y>340</y>
       <width>113</width>
       <height>23</height>
      </rect>
@@ -644,8 +644,8 @@
    <widget class="QLineEdit" name="f2_pos">
     <property name="geometry">
      <rect>
-      <x>880</x>
-      <y>220</y>
+      <x>750</x>
+      <y>370</y>
       <width>113</width>
       <height>23</height>
      </rect>
@@ -654,8 +654,8 @@
    <widget class="QLineEdit" name="f3_pos">
     <property name="geometry">
      <rect>
-      <x>880</x>
-      <y>250</y>
+      <x>750</x>
+      <y>400</y>
       <width>113</width>
       <height>23</height>
      </rect>
@@ -664,8 +664,8 @@
    <widget class="QLineEdit" name="torqueX_show">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>280</y>
+      <x>600</x>
+      <y>430</y>
       <width>113</width>
       <height>23</height>
      </rect>
@@ -674,8 +674,8 @@
    <widget class="QLineEdit" name="torqueZ_show">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>340</y>
+      <x>600</x>
+      <y>490</y>
       <width>113</width>
       <height>23</height>
      </rect>
@@ -684,8 +684,8 @@
    <widget class="QLineEdit" name="forceX_show">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>190</y>
+      <x>600</x>
+      <y>340</y>
       <width>113</width>
       <height>23</height>
      </rect>
@@ -694,8 +694,8 @@
    <widget class="QLineEdit" name="torqueY_show">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>310</y>
+      <x>600</x>
+      <y>460</y>
       <width>113</width>
       <height>23</height>
      </rect>
@@ -704,8 +704,8 @@
    <widget class="QLineEdit" name="forceZ_show">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>250</y>
+      <x>600</x>
+      <y>400</y>
       <width>113</width>
       <height>23</height>
      </rect>
@@ -714,8 +714,8 @@
    <widget class="QLineEdit" name="forceY_show">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>220</y>
+      <x>600</x>
+      <y>370</y>
       <width>113</width>
       <height>23</height>
      </rect>
@@ -724,8 +724,8 @@
    <widget class="QLabel" name="label_19">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>170</y>
+      <x>600</x>
+      <y>320</y>
       <width>91</width>
       <height>16</height>
      </rect>
@@ -737,21 +737,21 @@
    <widget class="QLabel" name="label_20">
     <property name="geometry">
      <rect>
-      <x>880</x>
-      <y>170</y>
+      <x>750</x>
+      <y>320</y>
       <width>91</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Pose</string>
+     <string>Hand Pose</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pb_ft_zero">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>40</y>
+      <x>910</x>
+      <y>370</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -798,13 +798,254 @@
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QPushButton" name="pb_movpos">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>560</y>
+      <width>85</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>move pos</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pb_movang">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>560</y>
+      <width>85</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>move angle</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_21">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>10</y>
+      <width>54</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>通信设置</string>
+    </property>
+   </widget>
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>30</y>
+      <width>231</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QComboBox" name="comboBox">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>10</y>
+       <width>91</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>50</y>
+       <width>91</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>115200</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_cmopen">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>100</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>打开串口</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_22">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>10</y>
+       <width>54</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>串口号：</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_23">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>50</y>
+       <width>54</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>波特率：</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_comclose">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>100</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>关闭串口</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="pbReadSldPos">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>90</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>读取位置</string>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="lcdpos">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>30</y>
+      <width>131</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="digitCount">
+     <number>10</number>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pbSldStop">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>130</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>停止</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="layoutWidget_5">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>190</y>
+      <width>340</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_7">
+     <item row="0" column="0">
+      <widget class="QPushButton" name="pbBackFast_2">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>&lt;&lt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="pbBackStep_2">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>&lt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="pbFWDStep_2">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QPushButton" name="pbFWDFast_2">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>&gt;&gt;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1015</width>
+     <width>1021</width>
      <height>20</height>
     </rect>
    </property>

@@ -8,12 +8,20 @@
 #include "arm_control.h"
 #include <QFile>
 #include "bhand/bhand.h"
+#include <QSerialPort>
+#include <QSerialPortInfo>
+#include "slidercontrol.h"
 
 namespace Ui {
 class MainWindow;
 }
 #define REMOTE_MODE_ABS 1
 #define REMOTE_MODE_REL 2
+
+#define REMOTE_MOVE_NONE 0
+#define REMOTE_MOVE_POS 1
+#define REMOTE_MOVE_ANG 2
+#define REMOTE_MOVE_ALL 3
 typedef struct{
     bool xp;
     bool xn;
@@ -147,10 +155,38 @@ private slots:
 
     void on_pb_kctrl_2_clicked(bool checked);
 
+    void on_pb_movpos_clicked(bool checked);
+
+    void on_pb_movang_clicked(bool checked);
+
+    void on_pushButton_cmopen_clicked();
+
+    void on_pbReadSldPos_clicked();
+
+    void on_pbSldStop_clicked();
+
+    void on_pbBackFast_3_clicked();
+
+    void on_pbBackStep_3_clicked();
+
+    void on_pbFWDStep_3_clicked();
+
+    void on_pbFWDFast_3_clicked();
+
+    void on_pbBackFast_2_clicked();
+
+    void on_pbBackStep_2_clicked();
+
+    void on_pbFWDStep_2_clicked();
+
+    void on_pbFWDFast_2_clicked();
+
 private:
     Ui::MainWindow *ui;
     Server *pserver;
     Jaco *jacoarm;
+    SliderControl *sld;
+
     QTimer *timer;
     KEY_STATE_DEF key_state;
     bool remote_enbaled;
@@ -172,6 +208,8 @@ private:
     axisSensorData  ftzero;
 
     bool admitance_control_enabled;
+    int move_position_angle;
+    void ui_init(void);
 signals:
     void SendPos(CartesianPosition pos);
     void SendForce(int* forcedata);

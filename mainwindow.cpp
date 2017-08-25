@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include<QDebug>
-#include"iostream"
+#include <QDebug>
+#include "iostream"
 
 using namespace std;
 
@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle(tr("Tcp server"));
     pserver = new Server;
     jacoarm = new Jaco();
+    sld = new SliderControl();
     //hand = new bhand("/dev/pcan0");
     arm_control_thread = new arm_control(jacoarm);
     //arm_control_thread->start();
@@ -22,6 +23,9 @@ MainWindow::MainWindow(QWidget *parent) :
         forcedata[i] = 0;
         forceadmit[i] = 0;
     }
+
+    // status varibles initialization
+
     ftzero.force_x = 0;
     ftzero.force_y = 0;
     ftzero.force_z = 0;
@@ -46,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     remote_enbaled = false;
     admitance_control_enabled = false;
     key_control_enabled = false;
+    move_position_angle = REMOTE_MOVE_NONE;
 
     timer = new QTimer(this);
     //timer->start(5);
@@ -60,6 +65,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this,SIGNAL(SendForce(int*)),this->pserver,SLOT(get_forcedata_slot(int*)));
     TrajectoryFile = new QFile("TrajectoryFile.log");
     TrajectoryFile->open(QIODevice::ReadWrite | QIODevice::Text);
+
+    ui_init();
 }
 
 MainWindow::~MainWindow()
@@ -396,35 +403,49 @@ void MainWindow::timer_out(){
         }
         if(remote_mode == REMOTE_MODE_REL)
         {
-            if(RemoteSpeedCmd.Position.CartesianPosition.X > 0.04 || RemoteSpeedCmd.Position.CartesianPosition.X < -0.04)
-                pointToSend.Position.CartesianPosition.X = RemoteSpeedCmd.Position.CartesianPosition.X;
-            else
-                pointToSend.Position.CartesianPosition.X = 0;
+            if(move_position_angle == REMOTE_MOVE_POS){
+                if(RemoteSpeedCmd.Position.CartesianPosition.X > 0.04 || RemoteSpeedCmd.Position.CartesianPosition.X < -0.04)
+                    pointToSend.Position.CartesianPosition.X = RemoteSpeedCmd.Position.CartesianPosition.X;
+                else
+                    pointToSend.Position.CartesianPosition.X = 0;
 
-            if(RemoteSpeedCmd.Position.CartesianPosition.Y > 0.04 || RemoteSpeedCmd.Position.CartesianPosition.Y < -0.04)
-                pointToSend.Position.CartesianPosition.Y = RemoteSpeedCmd.Position.CartesianPosition.Y;
-            else
-                pointToSend.Position.CartesianPosition.Y = 0;
+                if(RemoteSpeedCmd.Position.CartesianPosition.Y > 0.04 || RemoteSpeedCmd.Position.CartesianPosition.Y < -0.04)
+                    pointToSend.Position.CartesianPosition.Y = RemoteSpeedCmd.Position.CartesianPosition.Y;
+                else
+                    pointToSend.Position.CartesianPosition.Y = 0;
 
-            if(RemoteSpeedCmd.Position.CartesianPosition.Z > 0.04 || RemoteSpeedCmd.Position.CartesianPosition.Z < -0.04)
-                pointToSend.Position.CartesianPosition.Z = RemoteSpeedCmd.Position.CartesianPosition.Z;
-            else
-                pointToSend.Position.CartesianPosition.Z = 0;
+                if(RemoteSpeedCmd.Position.CartesianPosition.Z > 0.04 || RemoteSpeedCmd.Position.CartesianPosition.Z < -0.04)
+                    pointToSend.Position.CartesianPosition.Z = RemoteSpeedCmd.Position.CartesianPosition.Z;
+                else
+                    pointToSend.Position.CartesianPosition.Z = 0;
 
-            if(RemoteSpeedCmd.Position.CartesianPosition.ThetaX > 0.7 || RemoteSpeedCmd.Position.CartesianPosition.ThetaX < -0.7)
-                pointToSend.Position.CartesianPosition.ThetaX = RemoteSpeedCmd.Position.CartesianPosition.ThetaX / 3;
-            else
                 pointToSend.Position.CartesianPosition.ThetaX = 0;
-
-            if(RemoteSpeedCmd.Position.CartesianPosition.ThetaY > 0.7 || RemoteSpeedCmd.Position.CartesianPosition.ThetaY < -0.7)
-                pointToSend.Position.CartesianPosition.ThetaY = RemoteSpeedCmd.Position.CartesianPosition.ThetaY / 3;
-            else
                 pointToSend.Position.CartesianPosition.ThetaY = 0;
-
-            if(RemoteSpeedCmd.Position.CartesianPosition.ThetaZ > 1 || RemoteSpeedCmd.Position.CartesianPosition.ThetaZ < -1)
-                pointToSend.Position.CartesianPosition.ThetaZ = RemoteSpeedCmd.Position.CartesianPosition.ThetaZ / 3;
-            else
                 pointToSend.Position.CartesianPosition.ThetaZ = 0;
+            }
+
+            if(move_position_angle == REMOTE_MOVE_ANG){
+                if(RemoteSpeedCmd.Position.CartesianPosition.ThetaX > 0.7 || RemoteSpeedCmd.Position.CartesianPosition.ThetaX < -0.7)
+                    pointToSend.Position.CartesianPosition.ThetaX = RemoteSpeedCmd.Position.CartesianPosition.ThetaX / 3;
+                else
+                    pointToSend.Position.CartesianPosition.ThetaX = 0;
+
+                if(RemoteSpeedCmd.Position.CartesianPosition.ThetaY > 0.7 || RemoteSpeedCmd.Position.CartesianPosition.ThetaY < -0.7)
+                    pointToSend.Position.CartesianPosition.ThetaY = RemoteSpeedCmd.Position.CartesianPosition.ThetaY / 3;
+                else
+                    pointToSend.Position.CartesianPosition.ThetaY = 0;
+
+                if(RemoteSpeedCmd.Position.CartesianPosition.ThetaZ > 1 || RemoteSpeedCmd.Position.CartesianPosition.ThetaZ < -1)
+                    pointToSend.Position.CartesianPosition.ThetaZ = RemoteSpeedCmd.Position.CartesianPosition.ThetaZ / 3;
+                else
+                    pointToSend.Position.CartesianPosition.ThetaZ = 0;
+
+                pointToSend.Position.CartesianPosition.X = 0;
+                pointToSend.Position.CartesianPosition.Y = 0;
+                pointToSend.Position.CartesianPosition.Z = 0;
+            }
+
+
         }
         jacoarm->MySendBasicTrajectory(pointToSend);
     }
@@ -605,8 +626,8 @@ void MainWindow::on_pb_rmt_clicked(bool checked)
 
         ui->pb_rmt_abs->setEnabled(true);
         ui->pb_rmt_rel->setEnabled(true);
-        ui->pb_rmt_abs->setChecked(true);
-        remote_mode = REMOTE_MODE_ABS;
+        ui->pb_rmt_rel->setChecked(true);
+        remote_mode = REMOTE_MODE_REL;
 
     }
 
@@ -630,6 +651,7 @@ void MainWindow::on_pb_rmt_abs_clicked(bool checked)
     if(checked){
         remote_mode = REMOTE_MODE_ABS;
         ui->pb_rmt_rel->setChecked(false);
+
     }
 
 
@@ -640,6 +662,9 @@ void MainWindow::on_pb_rmt_rel_clicked(bool checked)
     if(checked){
         remote_mode = REMOTE_MODE_REL;
         ui->pb_rmt_abs->setChecked(false);
+        move_position_angle = REMOTE_MOVE_POS;
+        ui->pb_movpos->setChecked(true);
+        ui->pb_movang->setChecked(false);
     }
 
 
@@ -935,3 +960,97 @@ void MainWindow::on_pb_kctrl_2_clicked(bool checked)
     else
         admitance_control_enabled = false;
 }
+
+void MainWindow::on_pb_movpos_clicked(bool checked)
+{
+
+    if(checked){
+       move_position_angle = REMOTE_MOVE_POS;
+       ui->pb_movang->setChecked(false);
+    }
+
+
+}
+
+void MainWindow::on_pb_movang_clicked(bool checked)
+{
+    if(checked){
+        move_position_angle = REMOTE_MOVE_ANG;
+        ui->pb_movpos->setChecked(false);
+    }
+
+
+}
+
+void MainWindow::ui_init(void)
+{
+    // Example use QSerialPortInfo
+
+    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
+    {
+        qDebug() << "Name        : " << info.portName();
+        qDebug() << "Description : " << info.description();
+        qDebug() << "Manufacturer: " << info.manufacturer();
+
+        // Example use QSerialPort
+        QSerialPort serial;
+        serial.setPort(info);
+        if (serial.open(QIODevice::ReadWrite))
+        {
+            ui->comboBox->addItem(info.portName());
+            serial.close();
+        }
+    }
+}
+
+void MainWindow::on_pushButton_cmopen_clicked()
+{
+    QString rawname = ui->comboBox->currentText();
+    rawname = "/dev/" + rawname;
+    qDebug()<<rawname;
+    //QByteArray dev = ui->comboBox->currentText().toLatin1();
+
+    unsigned int baud = ui->lineEdit->text().toInt();
+    sld->serial_device = rawname.toLatin1();
+    sld->serial_baudrate = baud;
+    sld->modbus_init();
+    ui->pushButton_comclose->setEnabled(true);
+    ui->pushButton_cmopen->setEnabled(false);
+    ui->pbReadSldPos->setEnabled(true);
+    ui->pbSldStop->setEnabled(true);
+    ui->pbBackFast_2->setEnabled(true);
+    ui->pbBackStep_2->setEnabled(true);
+    ui->pbFWDFast_2->setEnabled(true);
+    ui->pbFWDStep_2->setEnabled(true);
+}
+
+void MainWindow::on_pbReadSldPos_clicked()
+{
+    sld->get_pose();
+}
+
+void MainWindow::on_pbSldStop_clicked()
+{
+    sld->stopsld();
+}
+
+void MainWindow::on_pbBackFast_2_clicked()
+{
+    sld->move_left();
+}
+
+void MainWindow::on_pbBackStep_2_clicked()
+{
+    sld->move_left_step();
+}
+
+void MainWindow::on_pbFWDStep_2_clicked()
+{
+    sld->move_right_step();
+}
+
+void MainWindow::on_pbFWDFast_2_clicked()
+{
+    sld->move_right();
+}
+

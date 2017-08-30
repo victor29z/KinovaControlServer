@@ -12,11 +12,14 @@
 #define PACK_GET_DAT    0x1
 #define PACK_SET_DAT    0x2
 #define PACK_SENDBACK   0x3
-typedef struct{
-    int pack_type;
-    float data[6];
 
-}TCP_PACK_DEF;
+typedef struct{
+
+    float pos_data[6];
+    int slider_speed;
+    int control_mode;
+
+}CONTROL_PACK_DEF;
 
 class Server : public QDialog
 {
@@ -27,12 +30,12 @@ public:
     float ser[6];
     float handle_position[6];
     float force_data_trans[6];
-    int hand_data[6];
+    int hand_data[8];
     QTcpServer *tcpServer;
     QTcpSocket *tcpSocket;
     QUdpSocket * udpSocket;
     QUdpSocket * udpforce;
-    TCP_PACK_DEF tcp_pack;
+    CONTROL_PACK_DEF control_pack;
 public slots:
 
     void recv_slot();
@@ -43,6 +46,7 @@ public slots:
 signals:
     void data_recieved(float *);
     void data_recieved(int *);
+    void data_recieved(CONTROL_PACK_DEF *);
     void force_data_recieved(float *);
     void data_send();
 };

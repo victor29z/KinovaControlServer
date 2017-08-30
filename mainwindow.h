@@ -56,10 +56,10 @@ private slots:
 
    // void on_confirm_pushButton_clicked();
 
-    void data_react(float* data);
+    void data_react(CONTROL_PACK_DEF * data);
     void force_data_react(float* data);
 
-    void data_sendback();
+
 
     void on_pb_home_clicked();
 
@@ -165,13 +165,6 @@ private slots:
 
     void on_pbSldStop_clicked();
 
-    void on_pbBackFast_3_clicked();
-
-    void on_pbBackStep_3_clicked();
-
-    void on_pbFWDStep_3_clicked();
-
-    void on_pbFWDFast_3_clicked();
 
     void on_pbBackFast_2_clicked();
 
@@ -206,6 +199,9 @@ private:
     bhand* hand;
     axisSensorData FTData;
     axisSensorData  ftzero;
+
+    int slider_speed;
+    int arm_control_mode;
 
     bool admitance_control_enabled;
     int move_position_angle;

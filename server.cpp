@@ -3,7 +3,7 @@
 #include<QDebug>
 #include<QByteArray>
 using namespace  std;
-char hostaddr[20] = "192.168.3.6";
+char hostaddr[20] = "192.168.3.10";
 
 Server::Server()
 {
@@ -22,12 +22,8 @@ Server::Server()
     connect(udpforce,SIGNAL(readyRead()),this,SLOT(udp_force_recv()));
     //connect(sendButton,SIGNAL(clicked()),this,SLOT(send_slot()));
     //connect(exitButton,SIGNAL(clicked()),this,SLOT(close()));
-    ser[0] = 0;
-    ser[1] = 0;
-    ser[2] = 0;
-    ser[3] = 0;
-    ser[4] = 0;
-    ser[5] = 0;
+    control_pack.control_mode = 0;
+    control_pack.slider_speed = 0;
 
 }
 
@@ -74,11 +70,16 @@ void Server::recv_slot()
 
 void Server::udp_recv(){
     int i;
-    udpSocket->readDatagram((char *)hand_data,sizeof(int) * 6);
-    for(i = 0; i < 6; i++)
-        handle_position[i] = hand_data[i] / 1000000.0f;
+    udpSocket->readDatagram((char *)hand_data,sizeof(int) * 8);
+    for(i = 0; i < 6; i++){
+        //handle_position[i] = hand_data[i] / 1000000.0f;
+        control_pack.pos_data[i] = hand_data[i] / 1000000.0f;
 
-    emit data_recieved(handle_position);
+    }
+    control_pack.control_mode = hand_data[6];
+    control_pack.slider_speed = hand_data[7];
+    //emit data_recieved(handle_position);
+    emit data_recieved(&control_pack);
 
 
 

@@ -52,12 +52,15 @@ MainWindow::MainWindow(QWidget *parent) :
     key_control_enabled = false;
     move_position_angle = REMOTE_MOVE_NONE;
 
+    slider_speed = 0;
+    arm_control_mode = 0;
+
     timer = new QTimer(this);
     //timer->start(5);
    //connect(pserver,SIGNAL(pserver->data_recieved(pserver->ser)),this,SLOT(data_react()));
     connect(pserver,SIGNAL(data_recieved(float*)),this,SLOT(data_react(float*)));//parameter should not be ignored
     connect(pserver,SIGNAL(force_data_recieved(float*)),this,SLOT(force_data_react(float*)));//parameter should not be ignored
-    connect(pserver,SIGNAL(data_send()),this,SLOT(data_sendback()));
+
     connect(timer,SIGNAL(timeout()),this,SLOT(timer_out()));
     connect(ui->pb_home,SIGNAL(clicked(bool)),arm_control_thread,SLOT(gohome()));
     connect(this,SIGNAL(SendPos(CartesianPosition)),arm_control_thread,SLOT(GetPos(CartesianPosition)));
@@ -125,7 +128,7 @@ void MainWindow::on_exit_pushButton_clicked()
 
 
 
-void MainWindow::data_react(float *data)
+void MainWindow::data_react(CONTROL_PACK_DEF *data)
 {
     TrajectoryPoint pointToSend;
 
@@ -148,22 +151,25 @@ void MainWindow::data_react(float *data)
         //RemotePoseCmd = RemotePoseHome;
         if(remote_mode == REMOTE_MODE_ABS)
         {
-            RemotePoseCmd.Position.CartesianPosition.X = RemotePoseHome.Position.CartesianPosition.X - data[1] / 2 ;
-            RemotePoseCmd.Position.CartesianPosition.Y = RemotePoseHome.Position.CartesianPosition.Y + (data[0]-0.14) / 2;
-            RemotePoseCmd.Position.CartesianPosition.Z = RemotePoseHome.Position.CartesianPosition.Z + data[2] / 2 ;
-            RemotePoseCmd.Position.CartesianPosition.ThetaX = RemotePoseHome.Position.CartesianPosition.ThetaX + (data[4] + 1.3)  ;
-            RemotePoseCmd.Position.CartesianPosition.ThetaY = RemotePoseHome.Position.CartesianPosition.ThetaY + (data[5] - 2.1) ;
-            RemotePoseCmd.Position.CartesianPosition.ThetaZ = RemotePoseHome.Position.CartesianPosition.ThetaZ + (data[3] + 3.8)  ;
+            RemotePoseCmd.Position.CartesianPosition.X = RemotePoseHome.Position.CartesianPosition.X - data->pos_data[1] / 2 ;
+            RemotePoseCmd.Position.CartesianPosition.Y = RemotePoseHome.Position.CartesianPosition.Y + (data->pos_data[0]-0.14) / 2;
+            RemotePoseCmd.Position.CartesianPosition.Z = RemotePoseHome.Position.CartesianPosition.Z + data->pos_data[2] / 2 ;
+            RemotePoseCmd.Position.CartesianPosition.ThetaX = RemotePoseHome.Position.CartesianPosition.ThetaX + (data->pos_data[4] + 1.3)  ;
+            RemotePoseCmd.Position.CartesianPosition.ThetaY = RemotePoseHome.Position.CartesianPosition.ThetaY + (data->pos_data[5] - 2.1) ;
+            RemotePoseCmd.Position.CartesianPosition.ThetaZ = RemotePoseHome.Position.CartesianPosition.ThetaZ + (data->pos_data[3] + 3.8)  ;
         }
         if(remote_mode == REMOTE_MODE_REL){
-            RemoteSpeedCmd.Position.CartesianPosition.X = - data[1];
-            RemoteSpeedCmd.Position.CartesianPosition.Y = data[0] - 0.14;
-            RemoteSpeedCmd.Position.CartesianPosition.Z = data[2];
-            RemoteSpeedCmd.Position.CartesianPosition.ThetaX = data[4] + 1.3;
-            RemoteSpeedCmd.Position.CartesianPosition.ThetaY = data[5] - 2.1;
-            RemoteSpeedCmd.Position.CartesianPosition.ThetaZ = data[3] + 3.8;
+            RemoteSpeedCmd.Position.CartesianPosition.X = - data->pos_data[1];
+            RemoteSpeedCmd.Position.CartesianPosition.Y = data->pos_data[0] - 0.14;
+            RemoteSpeedCmd.Position.CartesianPosition.Z = data->pos_data[2];
+            RemoteSpeedCmd.Position.CartesianPosition.ThetaX = data->pos_data[4] + 1.3;
+            RemoteSpeedCmd.Position.CartesianPosition.ThetaY = data->pos_data[5] - 2.1;
+            RemoteSpeedCmd.Position.CartesianPosition.ThetaZ = data->pos_data[3] + 3.8;
 
         }
+
+        arm_control_mode = data->control_mode;
+        slider_speed = data->slider_speed;
 
 
 
@@ -214,22 +220,7 @@ void MainWindow::force_data_react(float *data){
 
 }
 
-void MainWindow::data_sendback(){
-    CartesianPosition dataPosition;
-    TCP_PACK_DEF pack_sendback;
-    jacoarm->MyGetCartesianPosition(dataPosition);
 
-    pack_sendback.pack_type = PACK_SENDBACK;
-    pack_sendback.data[0] = dataPosition.Coordinates.X;
-    pack_sendback.data[1] = dataPosition.Coordinates.Y;
-    pack_sendback.data[2] = dataPosition.Coordinates.Z;
-    pack_sendback.data[3] = dataPosition.Coordinates.ThetaX;
-    pack_sendback.data[4] = dataPosition.Coordinates.ThetaY;
-    pack_sendback.data[5] = dataPosition.Coordinates.ThetaZ;
-
-    pserver->tcpSocket->write((char*)(&pack_sendback),sizeof(TCP_PACK_DEF));//force change
-
-}
 
 void MainWindow::on_pb_home_clicked()
 {

@@ -58,7 +58,8 @@ MainWindow::MainWindow(QWidget *parent) :
     timer = new QTimer(this);
     //timer->start(5);
    //connect(pserver,SIGNAL(pserver->data_recieved(pserver->ser)),this,SLOT(data_react()));
-    connect(pserver,SIGNAL(data_recieved(float*)),this,SLOT(data_react(float*)));//parameter should not be ignored
+    //connect(pserver,SIGNAL(data_recieved(float*)),this,SLOT(data_react(float*)));//parameter should not be ignored
+    connect(pserver,SIGNAL(data_recieved(CONTROL_PACK_DEF *)),this,SLOT(data_react(CONTROL_PACK_DEF *)));//parameter should not be ignored
     connect(pserver,SIGNAL(force_data_recieved(float*)),this,SLOT(force_data_react(float*)));//parameter should not be ignored
 
     connect(timer,SIGNAL(timeout()),this,SLOT(timer_out()));
@@ -132,7 +133,7 @@ void MainWindow::data_react(CONTROL_PACK_DEF *data)
 {
     TrajectoryPoint pointToSend;
 
-    qDebug()<<"recv pose data";
+    //qDebug()<<"recv pose data";
     if(jacoarm->InitState)//see details in jaco.cpp
     {
         cout << "* * *  E R R O R   D U R I N G   I N I T I A L I Z A T I O N  * * *" << endl;
@@ -171,7 +172,7 @@ void MainWindow::data_react(CONTROL_PACK_DEF *data)
         arm_control_mode = data->control_mode;
         slider_speed = data->slider_speed;
 
-
+        //ui->label_control_mode->setNum(arm_control_mode);
 
     }
 
@@ -298,6 +299,37 @@ void MainWindow::timer_out(){
     //We specify that this point will be used an angular(joint by joint) velocity vector.
     pointToSend.Position.Type = CARTESIAN_VELOCITY;
 
+    switch(arm_control_mode){
+    case 1:
+        move_position_angle = REMOTE_MOVE_POS;
+        break;
+    case 2:
+        move_position_angle = REMOTE_MOVE_ANG;
+        break;
+    case 3:
+        move_position_angle = REMOTE_MOVE_ALL;
+        break;
+    case 0:
+        move_position_angle = REMOTE_MOVE_NONE;
+        break;
+
+    }
+
+    switch(slider_speed){
+    case 1:
+        sld->move_left();
+        break;
+    case 2:
+        sld->move_left_step();
+        break;
+    case 3:
+        sld->move_right_step();
+        break;
+    case 4:
+        sld->move_right();
+        break;
+
+    }
 
     if(remote_enbaled == false){
         if(key_state.xp)

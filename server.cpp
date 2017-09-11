@@ -71,13 +71,24 @@ void Server::recv_slot()
 void Server::udp_recv(){
     int i;
     udpSocket->readDatagram((char *)hand_data,sizeof(int) * 8);
-    for(i = 0; i < 6; i++){
-        //handle_position[i] = hand_data[i] / 1000000.0f;
-        control_pack.pos_data[i] = hand_data[i] / 1000000.0f;
+    switch(hand_data[0]){
+        case PACK_SET_POSE:
+            for(i = 0; i < 6; i++){
+                //handle_position[i] = hand_data[i] / 1000000.0f;
+                control_pack.pos_data[i] = hand_data[i+2] / 1000000.0f;
+
+            }
+            qDebug()<<"recv pose data";
+        break;
+        case PACK_SET_MODE:
+            control_pack.control_mode = hand_data[1];
+            control_pack.slider_speed = hand_data[2];
+            qDebug()<<"recv control mode:"<<control_pack.control_mode;
+        break;
 
     }
-    control_pack.control_mode = hand_data[6];
-    control_pack.slider_speed = hand_data[7];
+
+
     //emit data_recieved(handle_position);
     emit data_recieved(&control_pack);
 

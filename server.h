@@ -9,9 +9,9 @@
 #include<QHostAddress>
 #include <QUdpSocket>
 
-#define PACK_GET_DAT    0x1
-#define PACK_SET_DAT    0x2
-#define PACK_SENDBACK   0x3
+#define PACK_SET_POSE    0xf1
+#define PACK_SET_MODE    0xf2
+#define PACK_SET_CAM     0xf3
 
 typedef struct{
 

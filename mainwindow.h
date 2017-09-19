@@ -206,6 +206,8 @@ private:
     bool admitance_control_enabled;
     int move_position_angle;
     void ui_init(void);
+
+    QSerialPort *CamPort;
 signals:
     void SendPos(CartesianPosition pos);
     void SendForce(int* forcedata);

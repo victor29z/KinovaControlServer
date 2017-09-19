@@ -171,6 +171,7 @@ void MainWindow::data_react(CONTROL_PACK_DEF *data)
 
         arm_control_mode = data->control_mode;
         slider_speed = data->slider_speed;
+        if(data->setft0) on_pb_ft_zero_clicked();
 
         //ui->label_control_mode->setNum(arm_control_mode);
 
@@ -449,17 +450,17 @@ void MainWindow::timer_out(){
 
             if(move_position_angle == REMOTE_MOVE_ANG){
                 if(RemoteSpeedCmd.Position.CartesianPosition.ThetaX > 0.7 || RemoteSpeedCmd.Position.CartesianPosition.ThetaX < -0.7)
-                    pointToSend.Position.CartesianPosition.ThetaX = RemoteSpeedCmd.Position.CartesianPosition.ThetaX / 3;
+                    pointToSend.Position.CartesianPosition.ThetaX = RemoteSpeedCmd.Position.CartesianPosition.ThetaX / 5;
                 else
                     pointToSend.Position.CartesianPosition.ThetaX = 0;
 
                 if(RemoteSpeedCmd.Position.CartesianPosition.ThetaY > 0.7 || RemoteSpeedCmd.Position.CartesianPosition.ThetaY < -0.7)
-                    pointToSend.Position.CartesianPosition.ThetaY = RemoteSpeedCmd.Position.CartesianPosition.ThetaY / 3;
+                    pointToSend.Position.CartesianPosition.ThetaY = RemoteSpeedCmd.Position.CartesianPosition.ThetaY / 5;
                 else
                     pointToSend.Position.CartesianPosition.ThetaY = 0;
 
                 if(RemoteSpeedCmd.Position.CartesianPosition.ThetaZ > 1 || RemoteSpeedCmd.Position.CartesianPosition.ThetaZ < -1)
-                    pointToSend.Position.CartesianPosition.ThetaZ = RemoteSpeedCmd.Position.CartesianPosition.ThetaZ / 3;
+                    pointToSend.Position.CartesianPosition.ThetaZ = RemoteSpeedCmd.Position.CartesianPosition.ThetaZ / 5;
                 else
                     pointToSend.Position.CartesianPosition.ThetaZ = 0;
 
@@ -1024,6 +1025,11 @@ void MainWindow::ui_init(void)
             serial.close();
         }
     }
+
+    CamPort = new QSerialPort();
+    CamPort->setBaudRate(9600);
+    CamPort->setPortName("/dev/ttyUSB1");
+    //CamPort->setDataBits();
 }
 
 void MainWindow::on_pushButton_cmopen_clicked()

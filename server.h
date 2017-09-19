@@ -18,6 +18,7 @@ typedef struct{
     float pos_data[6];
     int slider_speed;
     int control_mode;
+    int setft0;
 
 }CONTROL_PACK_DEF;
 

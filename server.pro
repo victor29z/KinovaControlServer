@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     libmodbus/modbus-data.c \
     libmodbus/modbus-rtu.c \
     libmodbus/modbus-tcp.c \
-    libmodbus/modbus.c
+    libmodbus/modbus.c \
+    cam_move_control.cpp
 
 HEADERS  += mainwindow.h \
     server.h \
@@ -47,6 +48,7 @@ HEADERS  += mainwindow.h \
     libmodbus/modbus-tcp-private.h \
     libmodbus/modbus-tcp.h \
     libmodbus/modbus-version.h \
-    libmodbus/modbus.h
+    libmodbus/modbus.h \
+    cam_move_control.h
 
 FORMS    += mainwindow.ui

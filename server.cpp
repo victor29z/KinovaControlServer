@@ -84,7 +84,9 @@ void Server::udp_recv(){
             control_pack.control_mode = hand_data[1];
             control_pack.slider_speed = hand_data[2];
             control_pack.setft0 = hand_data[4];
-            qDebug()<<"recv control mode:"<<control_pack.control_mode;
+            control_pack.campos_h = hand_data[5] ;
+            control_pack.campos_v = hand_data[6] ;
+            //qDebug()<<"recv control mode:"<<control_pack.control_mode;
         break;
 
     }

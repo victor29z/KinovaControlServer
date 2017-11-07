@@ -173,6 +173,9 @@ void MainWindow::data_react(CONTROL_PACK_DEF *data)
         slider_speed = data->slider_speed;
         if(data->setft0) on_pb_ft_zero_clicked();
 
+        cam_h_pos = data->campos_h;
+        cam_v_pos = data->campos_v;
+        //qDebug()<<"h:"<<cam_h_pos<<"    v:"<<cam_v_pos;
         //ui->label_control_mode->setNum(arm_control_mode);
 
     }
@@ -288,6 +291,8 @@ void MainWindow::timer_out(){
     jacoarm->MyGetAngularPosition(angPos);
     static int i;
     static unsigned int cnt;
+    static int cam_h_pos_old,cam_v_pos_old;
+    cnt++;
     /*
     hand->can_handle.read_loop(false);
     if(cnt++ % 10 == 0)
@@ -331,7 +336,20 @@ void MainWindow::timer_out(){
         break;
 
     }
+    /*
+    if(cnt % 50 == 0){
+        cam_mov.sethor(cam_h_pos);
+        cam_mov.setver(cam_v_pos);
 
+    }*/
+
+    if(cam_h_pos_old != cam_h_pos)
+        cam_mov.sethor(cam_h_pos);
+    if(cam_v_pos_old != cam_v_pos)
+        cam_mov.setver(cam_v_pos);
+
+    cam_h_pos_old = cam_h_pos;
+    cam_v_pos_old = cam_v_pos;
     if(remote_enbaled == false){
         if(key_state.xp)
             pointToSend.Position.CartesianPosition.X = 0.5;
@@ -1027,9 +1045,18 @@ void MainWindow::ui_init(void)
     }
 
     CamPort = new QSerialPort();
-    CamPort->setBaudRate(9600);
+
     CamPort->setPortName("/dev/ttyUSB1");
-    //CamPort->setDataBits();
+    bool ret = CamPort->open(QIODevice::ReadWrite);
+    if(ret == false)
+        qDebug()<<"cam port open failed";
+    CamPort->setBaudRate(QSerialPort::Baud9600);
+    CamPort->setDataBits(QSerialPort::Data8);
+    CamPort->setParity(QSerialPort::NoParity);
+    CamPort->setStopBits(QSerialPort::OneStop);
+    CamPort->setFlowControl(QSerialPort::NoFlowControl);
+
+    cam_mov.setport(CamPort);
 }
 
 void MainWindow::on_pushButton_cmopen_clicked()

@@ -11,6 +11,7 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include "slidercontrol.h"
+#include "cam_move_control.h"
 
 namespace Ui {
 class MainWindow;
@@ -208,6 +209,9 @@ private:
     void ui_init(void);
 
     QSerialPort *CamPort;
+    cam_move_control cam_mov;
+    int cam_h_pos;
+    int cam_v_pos;
 signals:
     void SendPos(CartesianPosition pos);
     void SendForce(int* forcedata);

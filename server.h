@@ -19,6 +19,8 @@ typedef struct{
     int slider_speed;
     int control_mode;
     int setft0;
+    int campos_h;
+    int campos_v;
 
 }CONTROL_PACK_DEF;
 
